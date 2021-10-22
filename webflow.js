@@ -201,6 +201,7 @@ window.addEventListener("load", async function () {
   }
   
   const changeLEDsub = async (e) => {
+    console.log("Here1");
     let { web3 } = window;
     const formElem = document.getElementById("formElem")
     try {
@@ -247,7 +248,7 @@ window.addEventListener("load", async function () {
             "Not authorized";
           return;
         }
-  
+        console.log("Here2");
         if (addressICTBalanceInEth < 1) {
           document.getElementById("outputErrorBody5").innerHTML =
             "Insufficient funds";
@@ -264,7 +265,7 @@ window.addEventListener("load", async function () {
             });
             return;
           });
-  
+          console.log("Here3");
         document.getElementById("outputBody5").innerHTML = "Success";
         return;
       } catch (error) {
