@@ -13,6 +13,10 @@ window.addEventListener("load", async function () {
   document
     .getElementById("getSkinsBtn")
     .addEventListener("click", getSkinsFromTokenId);
+
+  document
+    .getElementById("getSkinData")
+    .addEventListener("click", getSkinPulseSeed);
 });
 
 //
@@ -408,6 +412,40 @@ async function getSkinsFromTokenId() {
     textbox.innerHTML = result;
   } catch (err) {
     textbox.innerHTML = "non existant token";
+    console.error("Error: ", err, {
+      METHOD: "markForSale()",
+      FILE: "index.js",
+    });
+  }
+}
+
+//
+async function getSkinPulseSeed() {
+  const { web3 } = window
+  const messageBox = document.getElementById("skinDataList");
+  const skin = document.getElementById("skinInp").value;
+
+  try {
+    let { ledNFTContractInstance } =
+      await getContractInstances();
+    let accounts = await web3.eth.getAccounts();
+
+    const owner = await ledNFTContractInstance.methods.skinOwner(skin).call();
+
+    if (owner !== accounts[0]) {
+      messageBox.innerHTML = "You are not the owner of the token.";
+      return;
+    }
+
+    const data = await ledNFTContractInstance.methods
+      .getpulseNSeed(skin)
+      .call({ from: accounts[0] });
+
+    const pulse = data[0];
+    const seed = data[1];
+
+    messageBox.innerHTML = `pulse: ${pulse} <br> seed: ${seed}`;
+  } catch (err) {
     console.error("Error: ", err, {
       METHOD: "markForSale()",
       FILE: "index.js",
