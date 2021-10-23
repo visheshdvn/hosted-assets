@@ -8,6 +8,11 @@ window.addEventListener("load", async function () {
 
   document.getElementById("mintNFT").addEventListener("click", mintNFT);
   document.getElementById("claimICT").addEventListener("click", claimICT);
+
+  // get skins from tokenId
+  document
+    .getElementById("getSkinsBtn")
+    .addEventListener("click", getSkinsFromTokenId);
 });
 
 //
@@ -356,5 +361,56 @@ async function claimICT() {
     });
     document.getElementById("outputErrorBody4").innerHTML = "Server error";
     return;
+  }
+}
+
+
+// get skins from token ID
+async function getSkinsFromTokenId() {
+  const { web3 } = window
+  const textbox = document.getElementById("skinlist");
+  const id = document.getElementById("tokenId").value;
+
+  if (isNaN(id) || id == "") {
+    console.log("not a number");
+    textbox.innerText = "Not a valid number";
+    return;
+  }
+
+  textbox.innerText = "";
+
+  try {
+    let { ledNFTContractInstance } = await getContractInstances();
+    let accounts = await web3.eth.getAccounts();
+
+    const owner = await ledNFTContractInstance.methods.ownerOf(id).call();
+
+    if (owner !== accounts[0]) {
+      textbox.innerHTML = "You are not the owner of the token.";
+      return;
+    }
+    //
+    const res = await ledNFTContractInstance.methods
+      .getSkinsOfToken(id)
+      .call({ from: accounts[0] });
+
+    if (res.length === 0) {
+      textbox.innerHTML = "No skins associated with this token.";
+      return;
+    }
+
+    let result = "";
+    var skin;
+    for (skin in res) {
+      result += `<li>${res[skin]}</li>`;
+    }
+    result = `<ol> ${result} </ol>`;
+    textbox.innerHTML = result;
+  } catch (err) {
+    textbox.innerHTML = "non existant token";
+    console.error("Error: ", err, {
+      METHOD: "markForSale()",
+      FILE: "index.js",
+    });
   }
 }
