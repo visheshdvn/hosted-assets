@@ -17,6 +17,10 @@ window.addEventListener("load", async function () {
   document
     .getElementById("getSkinData")
     .addEventListener("click", getSkinPulseSeed);
+
+  document.getElementById("priceSubmitId").addEventListener("click", tokenSellForm)
+  document.getElementById("checkForSaleBtn").addEventListener("click", checkForSale)
+  document.getElementById("purchaseBtn").addEventListener("click", purchaseTOken)
 });
 
 //
