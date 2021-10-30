@@ -452,3 +452,142 @@ async function getSkinPulseSeed() {
     });
   }
 }
+
+// sell token
+async function tokenSellForm(e) {
+  e.preventDefault();
+  const { web3 } = window
+
+  const tokenIdField = document.getElementById("tokenIdInp");
+  const tokenPriceField = document.getElementById("tokenPriceInp");
+
+  try {
+    let { ledNFTContractInstance } = await getContractInstances();
+    let accounts = await web3.eth.getAccounts();
+    let price = tokenPriceField.value;
+    let id = tokenIdField.value;
+
+    let owner = await ledNFTContractInstance.methods.ownerOf(id).call();
+    console.log("owner", owner);
+
+    if (owner !== accounts[0]) {
+      throw new Error("You are not the owner of the token.");
+    }
+
+    let res = await ledNFTContractInstance.methods
+      .markForSale(id, web3.utils.toWei(`${price}`))
+      .send({ from: accounts[0] });
+    console.log("res", res);
+
+    document.getElementById(
+      "saleSuccess"
+    ).innerHTML = `Token with id ${tokenIdField.value} is up for sale.`;
+
+    setTimeout(() => {
+      document.getElementById("saleSuccess").innerHTML = "";
+    }, 3000);
+  } catch (error) {
+    console.error("Error: ", error, {
+      METHOD: "markForSale()",
+      FILE: "index.js",
+    });
+    document.getElementById("saleFailure").innerHTML = `Error`;
+
+    setTimeout(() => {
+      document.getElementById("saleFailure").innerHTML = "";
+    }, 3000);
+  }
+};
+
+
+// check is token is up for sale
+
+async function checkForSale(e) {
+  const forSaleInp = document.getElementById("forSaleInp");
+  e.preventDefault();
+  const _tokenId = forSaleInp.value;
+  const { web3 } = window
+
+  try {
+    let { ledNFTContractInstance } = await getContractInstances();
+    const res = await ledNFTContractInstance.methods
+      .isAvailableForSale(_tokenId)
+      .call();
+    if (res) {
+      const price = await ledNFTContractInstance.methods
+        .getPriceOfToken(_tokenId)
+        .call();
+      document.getElementById(
+        "forSaleResult"
+      ).innerHTML = `Token ${_tokenId} is available for sale for ${web3.utils.fromWei(
+        price,
+        "ether"
+      )} ether.`;
+      return;
+    }
+
+    document.getElementById(
+      "forSaleResult"
+    ).innerHTML = `Token ${_tokenId} is not available for sale.`;
+  } catch (err) {
+    console.error("Error: ", err, {
+      METHOD: "markForSale()",
+      FILE: "index.js",
+    });
+  }
+};
+
+// purchase token
+async function purchaseTOken(e) {
+  const { web3 } = window
+  e.preventDefault();
+  const purchaseInp = document.getElementById("tokenIdPurchaseInp");
+
+  try {
+    let { ledNFTContractInstance } = await getContractInstances();
+    let accounts = await web3.eth.getAccounts();
+    const res = await ledNFTContractInstance.methods
+      .isAvailableForSale(purchaseInp.value)
+      .call();
+    if (!res) {
+      throw new Error("token not available for sale");
+    }
+
+    let owner = await ledNFTContractInstance.methods
+      .ownerOf(purchaseInp.value)
+      .call();
+    console.log("owner", owner);
+
+    if (owner === accounts[0]) {
+      throw new Error("You cannot sell tokens to yourself.");
+    }
+
+    const price = await ledNFTContractInstance.methods
+      .getPriceOfToken(purchaseInp.value)
+      .call();
+
+    let resp = await ledNFTContractInstance.methods
+      .purchaseToken(purchaseInp.value)
+      .send({ from: accounts[0], value: price });
+    console.log(resp);
+
+    document.getElementById(
+      "purchaseSuccess"
+    ).innerHTML = `Bought Successfully`;
+
+    setTimeout(() => {
+      document.getElementById("purchaseSuccess").innerHTML = "";
+    }, 3000);
+  } catch (err) {
+    console.error("Error: ", err, {
+      METHOD: "markForSale()",
+      FILE: "index.js",
+    });
+
+    document.getElementById("purchaseFailure").innerHTML = `Error`;
+
+    setTimeout(() => {
+      document.getElementById("purchaseFailure").innerHTML = "";
+    }, 3000);
+  }
+};
