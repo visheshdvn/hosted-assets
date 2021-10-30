@@ -507,7 +507,6 @@ async function tokenSellForm(e) {
 // check is token is up for sale
 
 async function checkForSale(e) {
-  console.log("here");
   const forSaleInp = document.getElementById("forSaleInp");
   e.preventDefault();
   const _tokenId = forSaleInp.value;
