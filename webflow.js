@@ -18,15 +18,22 @@ window.addEventListener("load", async function () {
     .getElementById("getSkinData")
     .addEventListener("click", getSkinPulseSeed);
 
-  document.getElementById("priceSubmitId").addEventListener("click", tokenSellForm)
-  document.getElementById("checkForSaleBtn").addEventListener("click", checkForSale)
-  document.getElementById("purchaseBtn").addEventListener("click", purchaseTOken)
+  document
+    .getElementById("priceSubmitId")
+    .addEventListener("click", tokenSellForm);
+  document
+    .getElementById("checkForSaleBtn")
+    .addEventListener("click", checkForSale);
+  document
+    .getElementById("purchaseBtn")
+    .addEventListener("click", purchaseTOken);
 });
 
 //
 async function connectToEth() {
-  if (window.web3 !== "undefined") {
-    window.web3 = new window.Web3(window.ethereum);
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
+  if (web3 !== "undefined") {
     await window.ethereum.enable();
   } else {
     console.log("No Web3 Detected... using HTTP Provider");
@@ -34,7 +41,8 @@ async function connectToEth() {
 }
 
 async function getContractInstances() {
-  let { web3 } = window;
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
   try {
     let LedNFT_ABI, ICT_ABI;
 
@@ -82,8 +90,13 @@ async function getContractInstances() {
 }
 
 async function getALLNFTData() {
-  const { web3 } = window;
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
   try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
     let { ledNFTContractInstance } = await getContractInstances();
     let accounts = await web3.eth.getAccounts();
 
@@ -136,14 +149,16 @@ async function getALLNFTData() {
     // throw error;
 
     if (!web3.eth) {
-      document.getElementById("outputBody2").innerHTML = "<p style='color:red'>Connect to metamask.</p>";
+      document.getElementById("outputBody2").innerHTML =
+        "<p style='color:red'>Connect to metamask.</p>";
     }
   }
 }
 
 //
 async function mintNFT() {
-  const { web3 } = window;
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
   const nos = document.getElementById("tokens").value;
   if (!nos || nos < 1 || nos > 3) {
     document.getElementById("outputBody3").innerHTML =
@@ -155,6 +170,10 @@ async function mintNFT() {
   }
 
   try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
     document.getElementById("outputBody3").innerHTML = "";
     document.getElementById("outputErrorBody3").innerHTML = "";
 
@@ -215,9 +234,14 @@ async function mintNFT() {
 
 formElem.onsubmit = async (e) => {
   console.log("Here1");
-  let { web3 } = window;
-  const formElem = document.getElementById("formElem")
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
+  const formElem = document.getElementById("formElem");
   try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
     document.getElementById("outputBody5").innerHTML = "";
     document.getElementById("outputErrorBody5").innerHTML = "";
 
@@ -298,10 +322,15 @@ formElem.onsubmit = async (e) => {
 };
 
 async function claimICT() {
-  const { web3, Web3 } = window
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
   console.log("Claiming ICT");
   let addressICTBalanceInEth;
   try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
     document.getElementById("outputBody4").innerHTML = "";
     document.getElementById("outputErrorBody4").innerHTML = "";
 
@@ -372,10 +401,10 @@ async function claimICT() {
   }
 }
 
-
 // get skins from token ID
 async function getSkinsFromTokenId() {
-  const { web3 } = window
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
   const textbox = document.getElementById("skinlist");
   const id = document.getElementById("tokenId").value;
 
@@ -388,6 +417,10 @@ async function getSkinsFromTokenId() {
   textbox.innerText = "";
 
   try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
     let { ledNFTContractInstance } = await getContractInstances();
     let accounts = await web3.eth.getAccounts();
 
@@ -425,13 +458,17 @@ async function getSkinsFromTokenId() {
 
 //
 async function getSkinPulseSeed() {
-  const { web3 } = window
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
   const messageBox = document.getElementById("skinDataList");
   const skin = document.getElementById("skinInp").value;
 
   try {
-    let { ledNFTContractInstance } =
-      await getContractInstances();
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
+    let { ledNFTContractInstance } = await getContractInstances();
     let accounts = await web3.eth.getAccounts();
 
     const owner = await ledNFTContractInstance.methods.skinOwner(skin).call();
@@ -460,12 +497,17 @@ async function getSkinPulseSeed() {
 // sell token
 async function tokenSellForm(e) {
   e.preventDefault();
-  const { web3 } = window
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
 
   const tokenIdField = document.getElementById("tokenIdInp");
   const tokenPriceField = document.getElementById("tokenPriceInp");
 
   try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
     let { ledNFTContractInstance } = await getContractInstances();
     let accounts = await web3.eth.getAccounts();
     let price = tokenPriceField.value;
@@ -501,8 +543,7 @@ async function tokenSellForm(e) {
       document.getElementById("saleFailure").innerHTML = "";
     }, 3000);
   }
-};
-
+}
 
 // check is token is up for sale
 
@@ -510,9 +551,14 @@ async function checkForSale(e) {
   const forSaleInp = document.getElementById("forSaleInp");
   e.preventDefault();
   const _tokenId = forSaleInp.value;
-  const { web3 } = window
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
 
   try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
     let { ledNFTContractInstance } = await getContractInstances();
     const res = await ledNFTContractInstance.methods
       .isAvailableForSale(_tokenId)
@@ -539,15 +585,20 @@ async function checkForSale(e) {
       FILE: "index.js",
     });
   }
-};
+}
 
 // purchase token
 async function purchaseTOken(e) {
-  const { web3 } = window
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
   e.preventDefault();
   const purchaseInp = document.getElementById("tokenIdPurchaseInp");
 
   try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
     let { ledNFTContractInstance } = await getContractInstances();
     let accounts = await web3.eth.getAccounts();
     const res = await ledNFTContractInstance.methods
@@ -594,4 +645,4 @@ async function purchaseTOken(e) {
       document.getElementById("purchaseFailure").innerHTML = "";
     }, 3000);
   }
-};
+}
