@@ -89,6 +89,52 @@ async function getContractInstances() {
   }
 }
 
+// get NFT data
+async function getNFTData() {
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
+  try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
+    let { ledNFTContractInstance } = await getContractInstances();
+    let accounts = await web3.eth.getAccounts();
+
+    // let contractInstance = ledNFTContractInstance;
+    let balanceOfNFTForThisAddress = await ledNFTContractInstance.methods
+      .balanceOf(accounts[0])
+      .call();
+
+    let tokenId;
+    if (balanceOfNFTForThisAddress >= 1) {
+      tokenId = await ledNFTContractInstance.methods
+        .tokenOfOwnerByIndex(accounts[0], 0)
+        .call();
+    } else {
+      throw new Error("You don't have any tokens");
+      return;
+    }
+
+    const res = await ledNFTContractInstance.methods
+      .getSkinsOfToken(tokenId)
+      .call({ from: accounts[0] });
+
+    let result = "";
+    for (skin in res) {
+      result += `<li>${res[skin]}</li>`;
+    }
+    result = `<ol> ${result} </ol>`;
+    document.getElementById("skinsoutput").innerHTML = result
+  } catch (err) {
+    console.error("Error: ", err, {
+      METHOD: "markForSale()",
+      FILE: "index.js",
+    });
+  }
+}
+
+// getting all nft data
 async function getALLNFTData() {
   let { Web3 } = window;
   const web3 = new Web3(window.ethereum);
