@@ -1,10 +1,11 @@
 window.addEventListener("load", async function () {
+  document.querySelector(".my-node").innerHTML = "";
   document
     .getElementById("connectToEth")
     .addEventListener("click", connectToEth);
 
   document.getElementById("claimICT").addEventListener("click", claimICT);
-//   document.getElementById("getSkinsBtn").addEventListener("click", getNFTData);
+  //   document.getElementById("getSkinsBtn").addEventListener("click", getNFTData);
 });
 
 // connect to metamask
@@ -22,7 +23,7 @@ async function connectToEth() {
   console.log(`Wallet address: ${accounts[0]}`);
 
   // total supply
-//   getTotalSupply();
+  //   getTotalSupply();
 }
 
 async function getTotalSupply() {
@@ -164,8 +165,8 @@ async function claimICT() {
     document.getElementById("ictoutput").innerHTML =
       "ICT (Pulse Tokens) <br/>" + addressICTBalanceInEth + ` ICT`;
 
-      console.log("claimed " + addressICTBalanceInEth + ` ICT`);
-      document.getElementById("ictMessage").innerText = addressICTBalanceInEth;
+    console.log("claimed " + addressICTBalanceInEth + ` ICT`);
+    document.getElementById("ictMessage").innerText = addressICTBalanceInEth;
   } catch (error) {
     console.error("Error: ", error, {
       METHOD: "getData()",
