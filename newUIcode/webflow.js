@@ -22,11 +22,16 @@ async function connectToEth() {
   let accounts = await web3.eth.getAccounts();
   console.log(`Wallet address: ${accounts[0]}`);
 
+  // populate page
+  console.log("population started");
+  populatePageData();
+
   // total supply
   //   getTotalSupply();
 }
 
-async function getTotalSupply() {
+async function populatePageData() {
+  console.log("please wait for the data to appear...");
   const web3 = new Web3(window.ethereum);
   try {
     if ((await web3.eth.net.getNetworkType()) !== "goerli") {
@@ -34,67 +39,102 @@ async function getTotalSupply() {
       throw new Error("Connect to Goerli network");
     }
     let { ledNFTContractInstance } = await getContractInstances();
-
-    let circulatedTokens = await ledNFTContractInstance.methods
-      .allMintedId()
+    let populationData = [];
+    let balanceOfNFTForThisAddress = await ledNFTContractInstance.methods
+      .balanceOf(accounts[0])
       .call();
-    document.getElementById(
-      "totalsupplycount"
-    ).innerHTML = `${circulatedTokens.length} / 2048`;
-  } catch (e) {
-    console.log("Error");
+
+    for (let i = 0; i < balanceOfNFTForThisAddress; i++) {
+      let tokenId = await ledNFTContractInstance.methods
+        .tokenOfOwnerByIndex(accounts[0], i)
+        .call();
+
+      let blinkingPattern = await ledNFTContractInstance.methods
+        .getBlinkPatternOfTokenID(tokenId)
+        .call();
+
+      const skins = await ledNFTContractInstance.methods
+        .getSkinsOfToken(id)
+        .call({ from: accounts[0] });
+
+      populationData.push({ tokenId, blinkingPattern, skins });
+    }
+
+    console.log(populationData);
+  } catch (err) {
+    console.log("population error");
   }
 }
 
-//get contract instance
-// async function getContractInstances() {
-//   let { Web3 } = window;
+// async function getTotalSupply() {
 //   const web3 = new Web3(window.ethereum);
 //   try {
-//     let LedNFT_ABI, ICT_ABI;
+//     if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+//       window.alert("Connect to goerli network");
+//       throw new Error("Connect to Goerli network");
+//     }
+//     let { ledNFTContractInstance } = await getContractInstances();
 
-//     let ledNftFileResponse = await fetch(
-//       "https://raw.githubusercontent.com/visheshdvn/hosted-assets/main/webflow_goreli_ABIs/LedNFT.json"
-//     );
-//     LedNFT_ABI = await ledNftFileResponse.json();
-
-//     let ICTFileResponse = await fetch(
-//       "https://raw.githubusercontent.com/visheshdvn/hosted-assets/main/webflow_goreli_ABIs/IntensityChangeToken.json"
-//     );
-//     ICT_ABI = await ICTFileResponse.json();
-
-//     // let web3 = await getWeb3();
-//     const id = await web3.eth.net.getId();
-
-//     const ledNFTContractAddress = LedNFT_ABI.networks[id].address;
-//     const ledNFTContractInstance = new web3.eth.Contract(
-//       LedNFT_ABI.abi,
-//       ledNFTContractAddress
-//     );
-
-//     const ICTContractAddress = ICT_ABI.networks[id].address;
-//     const ICTContractInstance = new web3.eth.Contract(
-//       ICT_ABI.abi,
-//       ICTContractAddress
-//     );
-
-//     return Promise.resolve({
-//       // web3,
-//       ledNFTContractInstance,
-//       ICTContractInstance,
-//     });
-//   } catch (error) {
-//     console.error("Error: ", error, {
-//       METHOD: "getWeb3AndContractInstances",
-//       FILE: "index.js",
-//     });
-//     console.error("Error: ", error, {
-//       METHOD: "getContractInstance()",
-//       FILE: "index.js",
-//     });
-//     // throw error;
+//     let circulatedTokens = await ledNFTContractInstance.methods
+//       .allMintedId()
+//       .call();
+//     document.getElementById(
+//       "totalsupplycount"
+//     ).innerHTML = `${circulatedTokens.length} / 2048`;
+//   } catch (e) {
+//     console.log("Error");
 //   }
 // }
+
+//get contract instance
+async function getContractInstances() {
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
+  try {
+    let LedNFT_ABI, ICT_ABI;
+
+    let ledNftFileResponse = await fetch(
+      "https://raw.githubusercontent.com/visheshdvn/hosted-assets/main/webflow_goreli_ABIs/LedNFT.json"
+    );
+    LedNFT_ABI = await ledNftFileResponse.json();
+
+    let ICTFileResponse = await fetch(
+      "https://raw.githubusercontent.com/visheshdvn/hosted-assets/main/webflow_goreli_ABIs/IntensityChangeToken.json"
+    );
+    ICT_ABI = await ICTFileResponse.json();
+
+    // let web3 = await getWeb3();
+    const id = await web3.eth.net.getId();
+
+    const ledNFTContractAddress = LedNFT_ABI.networks[id].address;
+    const ledNFTContractInstance = new web3.eth.Contract(
+      LedNFT_ABI.abi,
+      ledNFTContractAddress
+    );
+
+    const ICTContractAddress = ICT_ABI.networks[id].address;
+    const ICTContractInstance = new web3.eth.Contract(
+      ICT_ABI.abi,
+      ICTContractAddress
+    );
+
+    return Promise.resolve({
+      // web3,
+      ledNFTContractInstance,
+      ICTContractInstance,
+    });
+  } catch (error) {
+    console.error("Error: ", error, {
+      METHOD: "getWeb3AndContractInstances",
+      FILE: "index.js",
+    });
+    console.error("Error: ", error, {
+      METHOD: "getContractInstance()",
+      FILE: "index.js",
+    });
+    // throw error;
+  }
+}
 
 async function claimICT() {
   let { Web3 } = window;
