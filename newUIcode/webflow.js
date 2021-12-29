@@ -24,7 +24,7 @@ async function connectToEth() {
 
   // populate page
   console.log("population started");
-  populatePageData();
+  await populatePageData();
 
   // total supply
   //   getTotalSupply();
@@ -34,25 +34,33 @@ async function populatePageData() {
   console.log("please wait for the data to appear...");
   const web3 = new Web3(window.ethereum);
   try {
+    console.log("here entered");
+    console.log(await web3.eth.net.getNetworkType());
     if ((await web3.eth.net.getNetworkType()) !== "goerli") {
       window.alert("Connect to goerli network");
       throw new Error("Connect to Goerli network");
     }
+    console.log("connected to wallet");
     let { ledNFTContractInstance } = await getContractInstances();
     let populationData = [];
+
     let balanceOfNFTForThisAddress = await ledNFTContractInstance.methods
       .balanceOf(accounts[0])
       .call();
+    console.log("balance:", balanceOfNFTForThisAddress);
 
     for (let i = 0; i < balanceOfNFTForThisAddress; i++) {
+      console.log("calling1");
       let tokenId = await ledNFTContractInstance.methods
         .tokenOfOwnerByIndex(accounts[0], i)
         .call();
 
+      console.log("calling2");
       let blinkingPattern = await ledNFTContractInstance.methods
         .getBlinkPatternOfTokenID(tokenId)
         .call();
 
+      console.log("calling3");
       const skins = await ledNFTContractInstance.methods
         .getSkinsOfToken(id)
         .call({ from: accounts[0] });
