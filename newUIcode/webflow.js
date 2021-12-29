@@ -90,7 +90,7 @@ async function populatePageData() {
     }
 
     console.log("connected to wallet");
-    // let { ledNFTContractInstance } = await getContractInstances();
+    let { ledNFTContractInstance } = await getContractInstances();
     let populationData = [];
     console.log("got contract instance");
 
