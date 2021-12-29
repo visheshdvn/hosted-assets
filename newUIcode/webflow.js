@@ -34,15 +34,15 @@ async function populatePageData() {
   console.log("please wait for the data to appear...");
   const web3 = new Web3(window.ethereum);
   try {
-    console.log("here entered");
-    console.log(await web3.eth.net.getNetworkType());
     if ((await web3.eth.net.getNetworkType()) !== "goerli") {
       window.alert("Connect to goerli network");
       throw new Error("Connect to Goerli network");
     }
+
     console.log("connected to wallet");
     let { ledNFTContractInstance } = await getContractInstances();
     let populationData = [];
+    console.log("got contract instance");
 
     let balanceOfNFTForThisAddress = await ledNFTContractInstance.methods
       .balanceOf(accounts[0])
