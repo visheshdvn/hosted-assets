@@ -30,6 +30,56 @@ async function connectToEth() {
   //   getTotalSupply();
 }
 
+//get contract instance
+async function getContractInstances() {
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
+  try {
+    let LedNFT_ABI, ICT_ABI;
+
+    let ledNftFileResponse = await fetch(
+      "https://raw.githubusercontent.com/visheshdvn/hosted-assets/main/webflow_goreli_ABIs/LedNFT.json"
+    );
+    LedNFT_ABI = await ledNftFileResponse.json();
+
+    let ICTFileResponse = await fetch(
+      "https://raw.githubusercontent.com/visheshdvn/hosted-assets/main/webflow_goreli_ABIs/IntensityChangeToken.json"
+    );
+    ICT_ABI = await ICTFileResponse.json();
+
+    // let web3 = await getWeb3();
+    const id = await web3.eth.net.getId();
+
+    const ledNFTContractAddress = LedNFT_ABI.networks[id].address;
+    const ledNFTContractInstance = new web3.eth.Contract(
+      LedNFT_ABI.abi,
+      ledNFTContractAddress
+    );
+
+    const ICTContractAddress = ICT_ABI.networks[id].address;
+    const ICTContractInstance = new web3.eth.Contract(
+      ICT_ABI.abi,
+      ICTContractAddress
+    );
+
+    return Promise.resolve({
+      // web3,
+      ledNFTContractInstance,
+      ICTContractInstance,
+    });
+  } catch (error) {
+    console.error("Error: ", error, {
+      METHOD: "getWeb3AndContractInstances",
+      FILE: "index.js",
+    });
+    console.error("Error: ", error, {
+      METHOD: "getContractInstance()",
+      FILE: "index.js",
+    });
+    // throw error;
+  }
+}
+
 async function populatePageData() {
   console.log("please wait for the data to appear...");
   const web3 = new Web3(window.ethereum);
@@ -40,7 +90,7 @@ async function populatePageData() {
     }
 
     console.log("connected to wallet");
-    let { ledNFTContractInstance } = await getContractInstances();
+    // let { ledNFTContractInstance } = await getContractInstances();
     let populationData = [];
     console.log("got contract instance");
 
@@ -93,56 +143,6 @@ async function populatePageData() {
 //     console.log("Error");
 //   }
 // }
-
-//get contract instance
-async function getContractInstances() {
-  let { Web3 } = window;
-  const web3 = new Web3(window.ethereum);
-  try {
-    let LedNFT_ABI, ICT_ABI;
-
-    let ledNftFileResponse = await fetch(
-      "https://raw.githubusercontent.com/visheshdvn/hosted-assets/main/webflow_goreli_ABIs/LedNFT.json"
-    );
-    LedNFT_ABI = await ledNftFileResponse.json();
-
-    let ICTFileResponse = await fetch(
-      "https://raw.githubusercontent.com/visheshdvn/hosted-assets/main/webflow_goreli_ABIs/IntensityChangeToken.json"
-    );
-    ICT_ABI = await ICTFileResponse.json();
-
-    // let web3 = await getWeb3();
-    const id = await web3.eth.net.getId();
-
-    const ledNFTContractAddress = LedNFT_ABI.networks[id].address;
-    const ledNFTContractInstance = new web3.eth.Contract(
-      LedNFT_ABI.abi,
-      ledNFTContractAddress
-    );
-
-    const ICTContractAddress = ICT_ABI.networks[id].address;
-    const ICTContractInstance = new web3.eth.Contract(
-      ICT_ABI.abi,
-      ICTContractAddress
-    );
-
-    return Promise.resolve({
-      // web3,
-      ledNFTContractInstance,
-      ICTContractInstance,
-    });
-  } catch (error) {
-    console.error("Error: ", error, {
-      METHOD: "getWeb3AndContractInstances",
-      FILE: "index.js",
-    });
-    console.error("Error: ", error, {
-      METHOD: "getContractInstance()",
-      FILE: "index.js",
-    });
-    // throw error;
-  }
-}
 
 async function claimICT() {
   let { Web3 } = window;
