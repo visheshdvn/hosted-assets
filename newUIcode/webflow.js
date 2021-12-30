@@ -93,6 +93,7 @@ async function populatePageData() {
     }
 
     let { ledNFTContractInstance } = await getContractInstances();
+    let accounts = await web3.eth.getAccounts();
     let populationData = [];
     console.log("got contract instance");
 
