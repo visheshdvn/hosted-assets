@@ -115,7 +115,7 @@ async function populatePageData() {
 
       console.log("calling3");
       const skins = await ledNFTContractInstance.methods
-        .getSkinsOfToken(id)
+        .getSkinsOfToken(tokenId)
         .call({ from: accounts[0] });
 
       populationData.push({ tokenId, blinkingPattern, skins });
