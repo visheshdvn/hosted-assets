@@ -1,5 +1,8 @@
 window.addEventListener("load", async function () {
-  document.querySelector(".my-node").innerHTML = "";
+  setTimeout(() => {
+    document.querySelector(".my-node").innerHTML = "";
+  }, 3000);
+
   document
     .getElementById("connectToEth")
     .addEventListener("click", connectToEth);
@@ -89,7 +92,6 @@ async function populatePageData() {
       throw new Error("Connect to Goerli network");
     }
 
-    console.log("connected to wallet");
     let { ledNFTContractInstance } = await getContractInstances();
     let populationData = [];
     console.log("got contract instance");
