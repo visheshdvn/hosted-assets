@@ -122,6 +122,7 @@ async function populatePageData() {
 
     console.log(populationData);
   } catch (err) {
+    console.log(err);
     console.log("population error");
   }
 }
