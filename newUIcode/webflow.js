@@ -372,9 +372,7 @@ async function populatePageData() {
         </p>
         <p class="token-title">Pulse:</p>
         <p class="token-detail pulse">
-          10 | 26 | 50 | 97 | 03 | 21 | 84 | 80 | 41 | 08 | 43 | 25 | 44 | 84 | 21
-          | 50 | 97 | 03 | 21 | 84 | 80 | 41 | 08 | 41 | 08 | 43 | 25 | 23 | 23 |
-          92 |
+          ${data.blinkingPattern.map(blink => blink + " |")}
         </p>
         <p class="token-title">Skin Hash:</p>
         <div class="form-block w-form">
