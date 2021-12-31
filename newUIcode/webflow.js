@@ -427,7 +427,7 @@ async function populatePageData() {
     。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
   </div>
 </div>`;
-    console.log(populationData);
+    console.log(populationData[0]);
   } catch (err) {
     console.error(err);
     console.log("population error");
