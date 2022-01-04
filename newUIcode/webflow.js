@@ -372,7 +372,7 @@ async function populatePageData() {
         </p>
         <p class="token-title">Pulse:</p>
         <p class="token-detail pulse">
-          ${data.blinkingPattern.map(blink => blink + " |")}
+          ${data.blinkingPattern.map((blink) => blink + " |")}
         </p>
         <p class="token-title">Skin Hash:</p>
         <div class="form-block w-form">
@@ -575,85 +575,80 @@ async function claimICT() {
 //   }
 // }
 
-// formElem.onsubmit = async (e) => {
-//   e.preventDefault();
-//   console.log("Here1");
-//   let { Web3 } = window;
-//   const web3 = new Web3(window.ethereum);
-//   const formElem = document.getElementById("formElem");
-//   try {
-//     if ((await web3.eth.net.getNetworkType()) !== "goerli") {
-//       window.alert("Connect to goerli network");
-//       throw new Error("Connect to Goerli network");
-//     }
-//     let { ledNFTContractInstance, ICTContractInstance } =
-//       await getContractInstances();
-//     let accounts = await web3.eth.getAccounts();
+formElem.onsubmit = async (e) => {
+  e.preventDefault();
+  console.log("Here1");
+  let { Web3 } = window;
+  const web3 = new Web3(window.ethereum);
+  const formElem = document.getElementById("formElem");
+  try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
+    let formData = new FormData(formElem);
+    let blinkPattern = formData.getAll("pattern").map((item) => parseInt(item));
+    let data = {
+      token_id: document.getElementById("idfield"),
+      pattern: blinkPattern,
+    };
 
-//     let tokenId = await ledNFTContractInstance.methods
-//       .tokenOfOwnerByIndex(accounts[0], 0)
-//       .call();
+    try {
+      let { ledNFTContractInstance, ICTContractInstance } =
+        await getContractInstances();
+      let accounts = await web3.eth.getAccounts();
+      let addressICTBalanceInWei = await ICTContractInstance.methods
+        .balanceOf(accounts[0])
+        .call();
+      let addressICTBalanceInEth = window.Web3.utils.fromWei(
+        addressICTBalanceInWei,
+        "ether"
+      );
 
-//     let formData = new FormData(formElem);
-//     let blinkPattern = formData.getAll("pattern").map((item) => parseInt(item));
-//     let data = {
-//       token_id: tokenId,
-//       pattern: blinkPattern,
-//     };
+      let ownerOfNFT;
+      try {
+        ownerOfNFT = await ledNFTContractInstance.methods
+          .ownerOf(data.token_id)
+          .call();
+      } catch (error) {
+        if (ownerOfNFT != accounts[0]) {
+          console.log("Not authorized");
+          return;
+        }
+      }
 
-//     try {
-//       let addressICTBalanceInWei = await ICTContractInstance.methods
-//         .balanceOf(accounts[0])
-//         .call();
-//       let addressICTBalanceInEth = window.Web3.utils.fromWei(
-//         addressICTBalanceInWei,
-//         "ether"
-//       );
-
-//       let ownerOfNFT;
-//       try {
-//         ownerOfNFT = await ledNFTContractInstance.methods
-//           .ownerOf(data.token_id)
-//           .call();
-//       } catch (error) {
-//         if (ownerOfNFT != accounts[0]) {
-//           console.log("Not authorized");
-//           return;
-//         }
-//       }
-
-//       if (ownerOfNFT != accounts[0]) {
-//         console.log("Not authorized");
-//         return;
-//       }
-//       console.log("Here2");
-//       if (addressICTBalanceInEth < 1) {
-//         console.log("Insufficient funds");
-//         return;
-//       }
-//       await ledNFTContractInstance.methods
-//         .changeLEDBlinkPattern(data.token_id, data.pattern)
-//         .send({ from: accounts[0], gas: 3000000 })
-//         .on("error", function (error, receipt) {
-//           console.error("Error: ", error, {
-//             METHOD: "changeLEDBlinkPattern()",
-//             FILE: "index.js",
-//           });
-//           return;
-//         });
-//       console.log("Success");
-//       return;
-//     } catch (error) {
-//       console.error("Error: ", error, {
-//         METHOD: "changeBlinkPattern()",
-//         FILE: "index.js",
-//       });
-//     }
-//   } catch (error) {
-//     console.error("Error: ", error, {
-//       METHOD: "formElem.onsubmit()",
-//       FILE: "index.js",
-//     });
-//     return;
-//   }
-// };
+      if (ownerOfNFT != accounts[0]) {
+        console.log("Not authorized");
+        return;
+      }
+      console.log("Here2");
+      if (addressICTBalanceInEth < 1) {
+        console.log("Insufficient funds");
+        return;
+      }
+      await ledNFTContractInstance.methods
+        .changeLEDBlinkPattern(data.token_id, data.pattern)
+        .send({ from: accounts[0], gas: 3000000 })
+        .on("error", function (error, receipt) {
+          console.error("Error: ", error, {
+            METHOD: "changeLEDBlinkPattern()",
+            FILE: "index.js",
+          });
+          return;
+        });
+      console.log("Success");
+      return;
+    } catch (error) {
+      console.error("Error: ", error, {
+        METHOD: "changeBlinkPattern()",
+        FILE: "index.js",
+      });
+    }
+  } catch (error) {
+    console.error("Error: ", error, {
+      METHOD: "formElem.onsubmit()",
+      FILE: "index.js",
+    });
+    return;
+  }
+};
