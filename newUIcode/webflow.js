@@ -490,9 +490,9 @@ async function claimICT() {
         addressICTBalanceInWei,
         "ether"
       );
-      document.getElementById("ictoutput").innerHTML =
-        "ICT (Pulse Tokens) <br/>" +
-        `${addressICTBalanceInEth} ICT and no left for claim`;
+      document.getElementById(
+        "ictMessage"
+      ).innerHTML = `${addressICTBalanceInEth} ICT and no left for claim`;
       console.log(`${addressICTBalanceInEth} ICT and no left for claim`);
       return;
     }
@@ -516,8 +516,8 @@ async function claimICT() {
       addressICTBalanceInWei,
       "ether"
     );
-    document.getElementById("ictoutput").innerHTML =
-      "ICT (Pulse Tokens) <br/>" + addressICTBalanceInEth + ` ICT`;
+    document.getElementById("ictMessage").innerHTML =
+      addressICTBalanceInEth + ` ICT`;
 
     console.log("claimed " + addressICTBalanceInEth + ` ICT`);
     document.getElementById("ictMessage").innerText = addressICTBalanceInEth;
@@ -597,7 +597,7 @@ formElem.onsubmit = async (e) => {
       let { ledNFTContractInstance, ICTContractInstance } =
         await getContractInstances();
       let accounts = await web3.eth.getAccounts();
-      
+
       let addressICTBalanceInWei = await ICTContractInstance.methods
         .balanceOf(accounts[0])
         .call();
