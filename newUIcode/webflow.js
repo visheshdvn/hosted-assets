@@ -597,6 +597,7 @@ formElem.onsubmit = async (e) => {
       let { ledNFTContractInstance, ICTContractInstance } =
         await getContractInstances();
       let accounts = await web3.eth.getAccounts();
+      
       let addressICTBalanceInWei = await ICTContractInstance.methods
         .balanceOf(accounts[0])
         .call();

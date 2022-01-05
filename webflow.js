@@ -138,6 +138,7 @@ async function getNFTData() {
 async function getALLNFTData() {
   let { Web3 } = window;
   const web3 = new Web3(window.ethereum);
+  console.log("getting all NFT data");
   try {
     if ((await web3.eth.net.getNetworkType()) !== "goerli") {
       window.alert("Connect to goerli network");
