@@ -589,11 +589,11 @@ formElem.onsubmit = async (e) => {
     let formData = new FormData(formElem);
     let blinkPattern = formData.getAll("pattern").map((item) => parseInt(item));
     console.log(
-      document.getElementById("idfield"),
-      typeof document.getElementById("idfield")
+      document.getElementById("idfield").value,
+      typeof document.getElementById("idfield").value
     );
     let data = {
-      token_id: +document.getElementById("idfield"),
+      token_id: +document.getElementById("idfield").value,
       pattern: blinkPattern,
     };
 
