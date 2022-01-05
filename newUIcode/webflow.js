@@ -1,7 +1,7 @@
 window.addEventListener("load", async function () {
   setTimeout(() => {
     document.querySelector(".my-node").innerHTML = "";
-  }, 3000);
+  }, 1000);
 
   document
     .getElementById("connectToEth")
@@ -612,12 +612,12 @@ formElem.onsubmit = async (e) => {
           .ownerOf(data.token_id)
           .call();
       } catch (error) {
-        if (ownerOfNFT != accounts[0]) {
-          console.log("Not authorized");
-          return;
-        }
+        console.error(error);
       }
 
+      console.log("ownerOfNFT :", ownerOfNFT);
+      console.log("account :", accounts[0]);
+      
       if (ownerOfNFT != accounts[0]) {
         console.log("Not authorized");
         return;
