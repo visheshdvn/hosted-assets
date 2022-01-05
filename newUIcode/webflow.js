@@ -588,8 +588,12 @@ formElem.onsubmit = async (e) => {
     }
     let formData = new FormData(formElem);
     let blinkPattern = formData.getAll("pattern").map((item) => parseInt(item));
+    console.log(
+      document.getElementById("idfield"),
+      typeof document.getElementById("idfield")
+    );
     let data = {
-      token_id: document.getElementById("idfield"),
+      token_id: +document.getElementById("idfield"),
       pattern: blinkPattern,
     };
 
@@ -617,7 +621,7 @@ formElem.onsubmit = async (e) => {
 
       console.log("ownerOfNFT :", ownerOfNFT);
       console.log("account :", accounts[0]);
-      
+
       if (ownerOfNFT != accounts[0]) {
         console.log("Not authorized");
         return;
