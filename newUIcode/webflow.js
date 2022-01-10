@@ -103,22 +103,27 @@ async function populatePageData() {
     console.log("balance:", balanceOfNFTForThisAddress);
 
     for (let i = 0; i < balanceOfNFTForThisAddress; i++) {
-      console.log("calling1");
+      console.log("getting id");
       let tokenId = await ledNFTContractInstance.methods
         .tokenOfOwnerByIndex(accounts[0], i)
         .call();
 
-      console.log("calling2");
+      console.log("getting blink pattern");
       let blinkingPattern = await ledNFTContractInstance.methods
         .getBlinkPatternOfTokenID(tokenId)
         .call();
 
-      console.log("calling3");
+      console.log("getting skins");
       const skins = await ledNFTContractInstance.methods
         .getSkinsOfToken(tokenId)
         .call({ from: accounts[0] });
 
-      populationData.push({ tokenId, blinkingPattern, skins });
+      console.log("getting token hash");
+      const hash = await ledNFTContractInstance.methods
+        .tokenHash(tokenId)
+        .call();
+
+      populationData.push({ tokenId, blinkingPattern, skins, hash });
     }
 
     document.querySelector(".my-node").innerHTML = populationData.map(
@@ -368,7 +373,7 @@ async function populatePageData() {
         <p class="token-detail id"># ${data.tokenId}</p>
         <p class="token-title">Token Hash:</p>
         <p class="token-detail id">
-          0xea99d59db9330b56d6b1753033a5a3c9eae39435322a3f8b74431d1faac2c000
+          ${hash}
         </p>
         <p class="token-title">Pulse:</p>
         <p class="token-detail pulse">
