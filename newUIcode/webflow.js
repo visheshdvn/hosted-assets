@@ -373,7 +373,7 @@ async function populatePageData() {
         <p class="token-detail id"># ${data.tokenId}</p>
         <p class="token-title">Token Hash:</p>
         <p class="token-detail id">
-          ${hash}
+          ${data.hash}
         </p>
         <p class="token-title">Pulse:</p>
         <p class="token-detail pulse">
