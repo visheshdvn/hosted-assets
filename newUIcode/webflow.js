@@ -92,7 +92,8 @@ async function populatePageData() {
       throw new Error("Connect to Goerli network");
     }
 
-    let { ledNFTContractInstance } = await getContractInstances();
+    let { ledNFTContractInstance, ICTContractInstance } =
+      await getContractInstances();
     let accounts = await web3.eth.getAccounts();
     let populationData = [];
     console.log("got contract instance");
@@ -101,6 +102,11 @@ async function populatePageData() {
       .balanceOf(accounts[0])
       .call();
     console.log("balance:", balanceOfNFTForThisAddress);
+
+    let ICTinitBal = await ICTContractInstance.methods
+      .balanceOf(accounts[0])
+      .call();
+    console.log("initial ICT balance", ICTinitBal);
 
     for (let i = 0; i < balanceOfNFTForThisAddress; i++) {
       console.log("getting id");
