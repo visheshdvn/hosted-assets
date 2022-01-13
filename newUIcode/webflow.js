@@ -103,11 +103,12 @@ async function populatePageData() {
       .call();
     console.log("balance:", balanceOfNFTForThisAddress);
 
-    let ICTinitBal = await ICTContractInstance.methods
+    const ICTinitBal = await ICTContractInstance.methods
       .balanceOf(accounts[0])
       .call();
-    ICTinitBal = Web3.utils.fromWei(ICTinitBal, "ether");
-    console.log("initial ICT balance", ICTinitBal);
+    let ICTinitBalETH = Web3.utils.fromWei(ICTinitBal, "ether");
+    console.log("initial ICT balance in ETH", ICTinitBalETH);
+    document.getElementById("ictMessage").innerHTML = `${ICTinitBalETH}`;
 
     for (let i = 0; i < balanceOfNFTForThisAddress; i++) {
       console.log("getting id");
