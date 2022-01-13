@@ -106,6 +106,7 @@ async function populatePageData() {
     let ICTinitBal = await ICTContractInstance.methods
       .balanceOf(accounts[0])
       .call();
+    ICTinitBal = Web3.utils.fromWei(ICTinitBal, "ether");
     console.log("initial ICT balance", ICTinitBal);
 
     for (let i = 0; i < balanceOfNFTForThisAddress; i++) {
