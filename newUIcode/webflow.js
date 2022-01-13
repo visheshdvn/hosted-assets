@@ -9,6 +9,9 @@ window.addEventListener("load", async function () {
 
   document.getElementById("claimICT").addEventListener("click", claimICT);
   //   document.getElementById("getSkinsBtn").addEventListener("click", getNFTData);
+  document
+    .getElementById("getCurrentICTBalBtn")
+    .addEventListener("click", getCurrentICTBalance);
 });
 
 // connect to metamask
@@ -440,6 +443,31 @@ async function populatePageData() {
   } catch (err) {
     console.error(err);
     console.log("population error");
+  }
+}
+
+async function getCurrentICTBalance() {
+  console.log("Fetching ICT Balance");
+  const web3 = new Web3(window.ethereum);
+
+  try {
+    if ((await web3.eth.net.getNetworkType()) !== "goerli") {
+      window.alert("Connect to goerli network");
+      throw new Error("Connect to Goerli network");
+    }
+
+    let { ICTContractInstance } = await getContractInstances();
+    let accounts = await web3.eth.getAccounts();
+    console.log("got contract instance");
+
+    const ICTinitBal = await ICTContractInstance.methods
+      .balanceOf(accounts[0])
+      .call();
+    let ICTinitBalETH = Web3.utils.fromWei(ICTinitBal, "ether");
+    console.log("initial ICT balance in ETH", ICTinitBalETH);
+    document.getElementById("currentICTval").innerHTML = `${ICTinitBalETH}`;
+  } catch (err) {
+    console.error(err);
   }
 }
 
