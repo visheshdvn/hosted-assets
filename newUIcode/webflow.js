@@ -12,6 +12,8 @@ window.addEventListener("load", async function () {
   document
     .getElementById("getCurrentICTBalBtn")
     .addEventListener("click", getCurrentICTBalance);
+
+  await populatePageData();
 });
 
 // connect to metamask
