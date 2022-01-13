@@ -13,6 +13,7 @@ window.addEventListener("load", async function () {
     .getElementById("getCurrentICTBalBtn")
     .addEventListener("click", getCurrentICTBalance);
 
+  await connectToEth();
   await populatePageData();
 });
 
