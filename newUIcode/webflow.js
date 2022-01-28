@@ -446,6 +446,7 @@ async function populatePageData() {
   } catch (err) {
     console.error(err);
     console.log("population error");
+    window.alert("Population error");
   }
 }
 
@@ -469,6 +470,7 @@ async function getCurrentICTBalance() {
     let ICTinitBalETH = Web3.utils.fromWei(ICTinitBal, "ether");
     console.log("initial ICT balance in ETH", ICTinitBalETH);
     document.getElementById("currentICTval").innerHTML = `${ICTinitBalETH}`;
+    window.alert("initial ICT balance in ETH", ICTinitBalETH);
   } catch (err) {
     console.error(err);
   }
@@ -538,6 +540,7 @@ async function claimICT() {
         "ictMessage"
       ).innerHTML = `${addressICTBalanceInEth} ICT and no left for claim`;
       console.log(`${addressICTBalanceInEth} ICT and no left for claim`);
+      alert("No ICT left for claim");
       return;
     }
 
@@ -550,6 +553,7 @@ async function claimICT() {
           METHOD: "claim()",
           FILE: "index.js",
         });
+        window.alert("Error");
         return;
       });
 
@@ -565,11 +569,13 @@ async function claimICT() {
 
     console.log("claimed " + addressICTBalanceInEth + ` ICT`);
     document.getElementById("ictMessage").innerText = addressICTBalanceInEth;
+    window.alert("Claimed " + addressICTBalanceInEth + ` ICT`);
   } catch (error) {
     console.error("Error: ", error, {
       METHOD: "getData()",
       FILE: "service.js",
     });
+    window.alert("Error");
     return;
   }
 }
@@ -668,11 +674,13 @@ formElem.onsubmit = async (e) => {
 
       if (ownerOfNFT != accounts[0]) {
         console.log("Not authorized");
+        window.alert("Not authorized");
         return;
       }
       console.log("Here2");
       if (addressICTBalanceInEth < 1) {
         console.log("Insufficient funds");
+        window.alert("Insufficient funds");
         return;
       }
       await ledNFTContractInstance.methods
@@ -686,18 +694,21 @@ formElem.onsubmit = async (e) => {
           return;
         });
       console.log("Success");
+      window.alert("Success");
       return;
     } catch (error) {
       console.error("Error: ", error, {
         METHOD: "changeBlinkPattern()",
         FILE: "index.js",
       });
+      window.alert("Error");
     }
   } catch (error) {
     console.error("Error: ", error, {
       METHOD: "formElem.onsubmit()",
       FILE: "index.js",
     });
+    alert("error");
     return;
   }
 };
